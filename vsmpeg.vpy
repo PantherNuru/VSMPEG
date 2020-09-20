@@ -14,19 +14,17 @@ from pvsfunc import decimate, debox
 from pyd2v import D2V
 from pymediainfo import MediaInfo
 
-# ============ #
-# Installation #
-# 1.  Run `pip install pvsfunc pyd2v`
-# 2a. Windows: `where vsrepo.py`, copy the full path to vsrepo.py `python <path/to/vsrepo.py> install havsfunc mvsfunc d2v ffms2`.
-# 2b. Linux: Install havsfunc, mvsfunc, d2v_source and ffms2, all are available on github and some distro user repos just search up.
-# 3.  Download DGIndex v1.5.8 from http://rationalqm.us/dgmpgdec/dgmpgdec.html (its in dgmpgdec158.zip)
-# 4a. Windows: Place DGIndex in C:/Program Files (x86)/DGIndex and then add that path to "PATH" with "Environment Variables" (start menu)
-# 4b. Linux: Add it to system-wide path, wine will work don't worry, `sudo nano /etc/profile.d/env.sh` and just pop it into export $PATH
-# 5.  Install MKVToolNix and make sure mkvmerge and mkvextract is available in PATH
-# ============ #
-# Usage #
-# It's super simple, configure CFG and read what each option does.
-# ===== #
+
+"""
+1. INSTALLATION
+
+Follow instructions here: https://github.com/rlaPHOENiX/VSMPEG/blob/master/README.md
+
+2. USAGE
+
+It's super simple, configure the CFG variable found below.
+"""
+
 
 CFG = {
 	# print debugging information
