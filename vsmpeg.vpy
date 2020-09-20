@@ -166,11 +166,34 @@ CFG = {
 		]
 	},
 	"chroma": {
-		# Chroma Location allows you to change how it handles the Chroma Sub-sampling. You would typically use this if you notice
-		# color bleeding, color bleeds outside where it's supposed to be, e.g. bleeding outside the edge of an object or outline.
-		# See here: http://www.vapoursynth.com/doc/apireference.html#reserved-frame-properties
+		# """
+		# Chroma Location specifies the position of Chroma Sub-sampling.
+		#
+		# Generally speaking you would keep this set to `None` for it to automatically use what's recommended by
+		# the codec's specifications sheet or what would of been the most common.
+		#
+		# However, if you notice color bleeding outside the edges of detail then the chroma location may be incorrect.
+		# You can use this to change the location in the hopes that it will help. Do not get this mixed up with
+		# color shifting, this isn't the same thing.
+		#
+		# At times though the encoding process can often take the original source videos they used to edit up
+		# the video with using wrong chroma location values, and then encode the wrong location baking it into the video
+		# and then also return the wrong chroma location on the new exported video. This happened on the first couple of
+		# seasons of Family Guy NTSC USA DVD's, but didn't happen on the Family Guy PSP UMD-Video encodes thanks to the
+		# AVC encoder they used for that, rather than the MPEG encoder they used for the DVD's.
+		# If that happened, changing the Chroma Location will help, but wont fully shove the color back into place.
+		#
+		# Values:
+		# `None` = Auto
+		# 0 = Left (middle)
+		# 1 = Center
+		# 2 = Top-left
+		# 3 = Top (middle)
+		# 4 = Bottom-left
+		# 5 = Bottom (middle)
 		# ! Important: Getting this value wrong can severely ruin the color quality. If unsure, put `None` !
-		"location": None  # None==Default, options: 0..5, for MPEG-2, 0 (center-left) is "standard" but usually 2 (top-left) results in less chroma bleeding and may be more desirable.
+		# """
+		"location": None
 	},
 	"debox": {
 		# Remove Pillarboxing or Letterboxing from the video by calculating a crop area based on aspect_ratio calculated against clip width and height.
