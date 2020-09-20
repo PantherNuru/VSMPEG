@@ -78,3 +78,9 @@ Note:
 2. Add the location of `dgmpgdec158` to system-wide PATH environment variable, it MUST be REAL system-wide and not your shell's environment!  
 `sudo nano /etc/profile.d/env.sh`, e.g.: `export PATH="$PATH:$HOME/winbin/dgmpgdec158"` where `~/winbin/dgmpgdec158` is where `DGIndex.exe` resides.
 3. You might need to logout and log back in, or worst case scenario reboot. If you want to be safe, reboot now.
+
+## Usage with vs-edit
+
+1. Download the [vsmpeg.vpy](vsmpeg.vpy) script file and store it somewhere nice, e.g. `Documents/VapourSynth/vsmpeg.vpy`.
+2. Open vs-edit and drag & drop the vsmpeg.vpy file you downloaded into vs-edit.
+3. Feel free to read the instructions near the top of the script and continue away :)
