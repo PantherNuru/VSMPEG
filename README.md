@@ -20,6 +20,12 @@ You won't need you're YouTube video's edits to be reproducable automatically on 
 
 This project (VSMPEG) is a great example of a use-case of VapourSynth as it deals with the shenanigans of MPEG video entirely automated (depending on the optional stuff you enable/want to do). This script isn't realtime right now, even on high-end hardware, however, if it becomes the case of the deinterlacing algorithms to shrink in processing time or hardware to improve, this script could be used in realtime as sort of an intermediate layer or plugin to automatically handle DVD playback automatically without any configuration by the user. That would be awesome.
 
+## VapourSynth-Editor (a.k.a. vs-edit)
+
+[vs-edit](https://forum.doom9.org/showthread.php?t=170965) is essentially an IDE for VapourSynth Script files. It integrates convenient features like a full fledged previewing system, a Syntax-highlighter, auto-completion, benchmarking, and more.
+
+This saves you ton's of headaches of using VapourSynth from the command line, especially the previewing system!
+
 # Installation
 
 Note:
@@ -31,10 +37,11 @@ Note:
 ## Requirements
 
 1. [VapourSynth](http://vapoursynth.com), seriously try and use the latest version for this one at all times.
-1. [Python](https://python.org), it's needed for VapourSynth, read VapourSynth's installation guide for information on required versions.
-2. [MKVToolNix](https://mkvtoolnix.download), ensure it's a recent version if not the latest.
-3. [dgmpgdec158.zip](http://rationalqm.us/dgmpgdec/dgmpgdec.html) for DGIndex v1.5.8. Download and extract it to a folder named `dgmpgdec158`.
-4. Linux ONLY: [wine](https://winehq.org) to be able to use DGIndex v1.5.8.
+2. [vs-edit](https://forum.doom9.org/showthread.php?t=170965), [What is it? Click here](#vapoursynth-editor-aka-vs-edit). Linux users: Find this in your distro's user-repo.
+3. [Python](https://python.org), it's needed for VapourSynth, read VapourSynth's installation guide for information on required versions.
+4. [MKVToolNix](https://mkvtoolnix.download), ensure it's a recent version if not the latest.
+5. [dgmpgdec158.zip](http://rationalqm.us/dgmpgdec/dgmpgdec.html) for DGIndex v1.5.8. Download and extract it to a folder named `dgmpgdec158`.
+6. Linux ONLY: [wine](https://winehq.org) to be able to use DGIndex v1.5.8.
 
 **Important**: Do not attempt to use an alternative MPEG indexer like D2VWitch or ffmpeg's indexer. They don't have nearly as much accuracy or efficiency as DGIndex as well as a few bugs I have noticed. DGIndex while old, is incredibly well made by Donald Graft and I want to thank him for his work on it.
 
