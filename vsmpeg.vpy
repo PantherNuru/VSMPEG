@@ -29,36 +29,140 @@ It's super simple, configure the CFG variable found below.
 
 
 CFG = {
-	# print debugging information
-	"debug": False,
-	# choose file to import and use
-	"file_path": r"file:///mnt/emby-1/tv/Family Guy/Family.Guy.S01.480p.DVD.REMUX.DD2.0.MPEG-PHOENiX/Family.Guy.S01E01.Death.Has.a.Shadow.480p.DVD.REMUX.DD2.0.MPEG-PHOENiX.mkv",
+	# print useful information about the source video
+	"debug": True,
+	# choose video file to use, support's all kinds of formats and containers
+	"file_path": r"file:///mnt/emby-red/tv/Family Guy/Family.Guy.S01.480p.DVD.REMUX.DD2.0.MPEG-PHOENiX/Family.Guy.S01E01.Death.Has.a.Shadow.480p.DVD.REMUX.DD2.0.MPEG-PHOENiX.mkv",
+	# the deinterlacer options
 	"deinterlace": {
-		# deinterlacer function to use, e.g. `"kernel": havsfunc.QTGMC`. `None` defaults to QTGMC
+		# deinterlacer function to use, e.g. `"kernel": havsfunc.QTGMC`. `None` defaults to Havsfunc's QTGMC
 		"kernel": None,
 		# arguments to pass to the kernel function
 		"kernel_args": {
-			# this is kernel arguments for QTGMC since it defaults to QTGMC
-			# FPSDivisor: Some interlaced content can be Double-rate FPS, for example `The IT Crowd UK PAL DVD S01E03` is Double-rate FPS (50.000; 50/1), use `1` for Double-rate output, and `2` otherwise. With this set to `1` if every 2nd frame is a duplicate (or slightly different changes due to QTGMC interpretation) then it is NOT double-rate FPS and `2` should be used.
+			# the following arguments are for havsfunc's QTGMC since kernel is set to `None`.
+			# FPSDivisor: Some interlaced content can be Double-rate FPS, for example The IT Crowd's UK PAL DVD can be output as Double-rate FPS (50.000; 50/1) if you set to `1`. With it set to `1` and every 2nd frame is a duplicate (or slightly different changes due to QTGMC interpolation) then it is NOT double-rate FPS and `2` should be used.
 			"FPSDivisor": 2
-			# ... add arguments based on qtgmc's documentation here if wanted: http://avisynth.nl/index.php/QTGMC
+			# ... add more qtgmc arguments here if wanted: http://avisynth.nl/index.php/QTGMC
 		}
 	},
 	"decimate": {
-		# IVTC (Inverse-Telecine) a video by deleting frames with a pattern (mode=0) or by duplicate detection (mode=1)
-		"enabled": False,
+		# """
+		# IVTC (Inverse-Telecine) a video by deleting frames in a pattern or by duplicate detection.
+		#
+		# Important: If you're IVTC'ing a DVD, you seriously have to provide this script a .vob file rather
+		# than a .mp4/.mkv e.t.c. Do NOT use a REMUX or transcode of a DVD, you have to use the original .VOB.
+		# This is because transcodes and remuxes don't retain vital VOB ID information crucial to ensuring
+		# the decimation cycle stay's synced with the video.
+		#
+		# > You will need an understanding of Pulldown:
+		#
+		# https://gist.github.com/rlaPHOENiX/eaa987f7fd365fcd6803576746471b8d#6-pulldown
+		#
+		# > What is the Cycle?
+		#
+		# The cycle is the grouping/chunking of frames in which it will use the offsets information to decide
+		# which frames of the cycle to keep or not. E.g. a cycle of `5` and an offset of `[0, 1, 2, 3]` will
+		# remove every 5th frame.
+		#
+		# It's hard to explain how to retrieve what cycle value to use as it can literally be anything.
+		# It all depends on how the video was encoded and prepared. I can give you an example however:
+		#
+		# Let's say you have FILM (24 fps) content and you want to play it on an NTSC CRT TV by broadcast or
+		# DVD, then you would need to play it in 30000/1001 FPS (or 60000/1001 fields) no matter what.
+		# How would you convert 24 fps to 30000/1001 (29.97~ FPS)? By pulldown. There's two ways, by telling
+		# the player software or hardware to apply pulldown on playback, or by doing the pulldown right away
+		# when encoding the video.
+		#
+		# For 24 FPS to 30000/1001 FPS you would delete 1 in every 1000 frames (or slow down the video by
+		# 1.001 frame/s), and then apply Pulldown 2:3 meaning the first frame would be split into 2 fields
+		# and the second frame would be split into 3 fields, repeating until all frames of the FILM video
+		# is converted to just fields. What you end up with is 60000/1001 Field/s, or 30000/1001 Frame/s.
+		# This means a cycle of 5 (Pulldown 2:3 == 2+3 == 5) would have been used here. After deinterlacing
+		# the duplicate frame would be the 3rd frame every 5 frames would be a duplicate frame. For Pulldown 3:2
+		# the duplicate frame would be the 2nd frame every 5 frames.
+		#
+		# > What is the Offset?
+		#
+		# Offset indicates which frames to keep, and which frames to delete in the cycle.
+		#
+		# The format of offsets are a list of integers in which each integer number represents each frame
+		# in the cycle starting with 0. e.g. `3` would be the 4th frame in the cycle.
+		# The maximum value of an integer in an offset would be the cycle number subtracted by 1, e.g. (5-1=4).
+		# The maximum amount of integers in an offset would be the cycle number as it is.
+		#
+		# For an example, if our Cycle is 5, and we use the offsets: `[1, 3]`, that would delete the first
+		# frame, the third frame, and the fifth frame, leaving only frame 2 and 4.
+		#
+		# > How do I IVTC?
+		#
+		# You need to find the correct values for Cycle and Offsets for your specific video.
+		# You would only ever IVTC if you notice duplicate frames in a pattern so that you can delete unnecessary
+		# frames and reduce file size and bitrate. So the first step really would be to try and notice a pattern
+		# of duplicate frames.
+		#
+		# If you go frame by frame on a video (recommended doing so through this script, not in a video player)
+		# and notice duplicate frames appearing in a pattern (e.g. every 5 frames, every 9 frames, e.t.c), then
+		# you may need to IVTC.
+		#
+		# Make sure that scenes that would be typically done in post-production/editing like fade-in/outs, 
+		# transitions, effects, credits, e.t.c are also having the same repeated pattern. If these shots don't
+		# have duplicate frames then the video itself was edited in a higher frame rate than the actual video
+		# contents. Meaning if you were to IVTC, you would make those edit's have less frames since they don't
+		# have duplicates. For example on DVD's it's quite common for Intro's and Outro's to be 30000/1001 FPS
+		# whereas the actual episode content is only 24000/1001 FPS but encoded with Pulldown 2:3 (or such) to
+		# 30000/1001 FPS, resulting in a pattern of duplicate frames. In cases like this, it's up to you if you
+		# want to IVTC or not, my point is just to make sure the entire video has the repeating pattern, and not
+		# just one scene or just coincidence.
+		#
+		# Once you find a repeating duplicate pattern, go onto a frame that would be the duplicate (the 2nd frame
+		# that's a copy), and enable "debug" and IVTC, go forward and count how many frames there are between each
+		# duplicate (including the duplicate frame), and that's probably your Cycle, you would need to check this
+		# multiple times throughout many scenes to confirm it.
+		#
+		# Now, fill up your offsets to keep every frame from the cycles, and test each frame removed on it's own
+		# until the Debug display states "decimated_frame=True" only on the repeating duplicate frames.
+		#
+		# Verify "decimated_frame=True" is stated on all the pattern duplicate frames throughout the video and
+		# only on the pattern duplicate frames.
+		#
+		# > Teacher's answer's sheet
+		#
+		# If you're video is 2:3 Pulldown (cycle of 5, duplicate every 5 frames) then the Offsets are most likely
+		# going to be `[0, 1, 3, 4]` (delete cycle's third frame) or `[0, 2, 3, 4]` (delete cycle's second frame).
+		# 
+		# Anyway, never take any of these values as definites, just examples, always verify using "debug" if
+		# "decimated_frame=True" on the right frames before finalising your values.
+		#
+		# Yes, IVTC is a pain in the ass, you gotta deal with it or just leave it as is, up to you.
+		# Don't take shortcuts, measure twice and cut once. It's worse to use wrong values and encode it,
+		# than leaving it as it is.
+		#
+		# """
+		"enabled": True,
+		# a dvd vob can contain more than one encoded video, this is indicated by vob id. decimation cycles should
+		# always reset whenever it enters a new vob id (different video in same vob) or it will desync and delete
+		# the wrong frames. it's safe to keep this enabled even on non dvd videos. this will only work if you provide
+		# this script a dvd .vob file, not a remux of the dvd file, e.g. .mp4 or .mkv file.
 		"per_vob_id": True,
-		#"mode": 0,  # mode 0 is recommended
+		# decimation mode to use. mode 0 is default and recommended. mode 1 can be deadly: https://git.io/avoid-tdecimate
+		"mode": 0,
+		# decimation cycle, it's hard to explain this one, but think of it as grouping n frames and then
+		# using the offsets information below to decide which of those frames to keep, then repeating for the next
+		# group of those n frames.
 		"cycle": [
-			# cycles can be a list of integers, where each cycle corresponds to each vob id.
-			# 5 is most common cycle for NTSC 3:2 pulldown, see if that one matches first
+			# cycles can be a list of integers, where each integer corresponds to each vob id.
+			# if only one integer is specified, and there's more than one vob id, it will use that
+			# integer for all vob id's.
+			# for 3:2/2:3 pulldown, 5 is the most common cycle, see if that one matches first.
 			5
 		],
 		"offsets": [
-			# offsets can be a list of lists, where each offset corresponds to each vob id.
-			# [0, 1, 3, 4] is most common offset, see if that one matches first
-			[0, 2, 3, 4],
-			#[0, 1, 3, 4]
+			# offsets must be a list of lists which has integers, where each integer corresponds to each vob id.
+			# if only one list of integers is specified, and there's more than one vob id, it will use that
+			# list of integers for all vob id's.
+			# for 3:2/2:3 pulldown, [0, 1, 3, 4] is the most common offset, see if that one matches first.
+			[0, 1, 3, 4],
+			#[0, 2, 3, 4]
 		]
 	},
 	"chroma": {
