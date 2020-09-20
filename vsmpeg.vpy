@@ -212,9 +212,14 @@ CFG = {
 		#"offset": 0
 	},
 	"vsgan": {
-		# Super-resolution Generative Adversarial Network (port of ESRGAN). Allows you to use trained models on each frame of the video. VSGAN is applied after Deinterlacing, Decimation and Deboxing but before aspect_ratio fixer below.
+		# """
+		# Super-resolution Generative Adversarial Network (port of ESRGAN).
+		# Allows you to use trained models on each frame of the video.
+		# VSGAN is applied after Deinterlacing, Decimation and Deboxing but before aspect_ratio fixer below.
+		
+		# More info: 
 		# https://github.com/rlaPHOENiX/VSGAN
-		# if you dont care about this or have no clue how to use it just set enabled: false and move on lol
+		# """
 		"enabled": False,
 		"compare": 1,  # Compare between input and output of VSGAN, 0=Off, 1==Interleave, 2==StackHorizontal, 3==mvsfunc.Preview
 		"output_yuv": False,  # Convert Result frame to YUV, recommended if encoding to video with FFMPEG, otherwise disable
@@ -249,8 +254,13 @@ CFG = {
 		}]
 	},
 	"aspect_ratio": {
-		# Resizes frame images to match the Aspect-Ratio provided by the Source Loader. However, this will round up the width value if it's not an int.
-		# If possible, set Aspect-Ratio on the container rather than transcoding to that resolution, that way you have a bit more data on the width of the frames while still displaying at the wanted aspect-ratio on playback.
+		# """
+		# Fix the aspect ratio of the input video by using it's supplied Display Aspect Ratio value.
+		# Note: This will round up the width value if it's not an int.
+		#
+		# Just so you know, you can specify the Display aspect ratio on the encoded video on MP4 or MKV
+		# within the container's metadata, using this option isn't directly needed.
+		# """
 		"enabled": False,
 		"kernel": core.resize.Spline64  # Good options are Spline64, Bicubic and Nearest-Neighbour/Point depending on what you need done.
 	}
