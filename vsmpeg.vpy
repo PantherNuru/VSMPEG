@@ -196,9 +196,18 @@ CFG = {
 		"location": None
 	},
 	"debox": {
-		# Remove Pillarboxing or Letterboxing from the video by calculating a crop area based on aspect_ratio calculated against clip width and height.
+		# """
+		# Remove Pillarboxing or Letterboxing by calculating a crop area based on aspect_ratio against clip width and height.
+		# 
+		# Mode:
+		# 0 = Remove Pillarboxing
+		# 1 = Remove Letterboxing
+		#
+		# Offset:
+		# If there's slightly more boxing on one side than the other, you can use offset to re-center the cropping (- or + int).
+		# """
 		"enabled": False,
-		#"aspect_ratio": "4:3",
+		"aspect_ratio": "4:3",
 		#"mode": 0,
 		#"offset": 0
 	},
