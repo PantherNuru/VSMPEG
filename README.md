@@ -2,19 +2,27 @@
 
 VapourSynth script to automatically handle fields of an MPEG video file to return a Progressive CFR video stream.
 
-# What is VapourSynth and what is a VapourSynth Script (.vpy)
+## What is VapourSynth and what is a VapourSynth Script (.vpy)
 
 "A video processing framework with simplicity in mind"—[VapourSynth Project](https://github.com/vapoursynth/vapoursynth)
 
-To add more to that, It's a Script-based NLE ([Non-linear editing system](https://wikipedia.org/wiki/Non-linear_editing_system)), meaning it isn't a GUI program, all changes you wish to make must be specifically programmed in [Python](https://wikipedia.org/wiki/Python_(programming_language)), hence the VapourSynth Script project extension, .vpy.
+To add more to that, it's a *Script-based* NLE ([Non-linear editing system](https://wikipedia.org/wiki/Non-linear_editing_system)).
 
-# No GUI?! That must be painful!
+It's not GUI software rather a scripting framework for videos that uses the [Python programming language](https://wikipedia.org/wiki/Python_(programming_language)).
 
-For your typical YouTube video it's unconventional yes, but that isn't the goal of a project like this. A Script-based NLE is to be scripted to do handle a specific use case, and be able to be utilised by other programs like GUI editors, video players, hardware players, and such.
+VapourSynth Script files use the .vpy extension (revision on .py being the Python script extension).
+
+## Wait, No GUI?! That must be painful!
+
+For your typical YouTube video it's unconventional yes, but that isn't the goal of a project like this. A Script-based NLE is scripted to handle a specific use case, and be able to be utilised by other programs like GUI editors, video players, hardware players, and such.
+
+You won't need you're YouTube video's edits to be reproducable automatically on other people's PC's, but an edit like filtering colors, stabilization algorithms, machine learning edits, deinterlacing, e.t.c would be. You can generally think of VapourSynth as a framework for plugin creation, though it's extremely versatile and portable and not locked to one program but can be used by any program (as long as it supports it).
 
 This project (VSMPEG) is a great example of a use-case of VapourSynth as it deals with the shenanigans of MPEG video entirely automated (depending on the optional stuff you enable/want to do). This script isn't realtime right now, even on high-end hardware, however, if it becomes the case of the deinterlacing algorithms to shrink in processing time or hardware to improve, this script could be used in realtime as sort of an intermediate layer or plugin to automatically handle DVD playback automatically without any configuration by the user. That would be awesome.
 
 # Installation
+
+Note:
 
 - I will presume you know what a terminal (or command prompt) is, and how to open one.
 - When I state, "Run `...`" that indicates to run a command in a terminal.
