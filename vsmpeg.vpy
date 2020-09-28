@@ -138,7 +138,7 @@ CFG = {
 		# than leaving it as it is.
 		#
 		# """
-		"enabled": True,
+		"enabled": False,
 		# a dvd vob can contain more than one encoded video, this is indicated by vob id. decimation cycles should
 		# always reset whenever it enters a new vob id (different video in same vob) or it will desync and delete
 		# the wrong frames. it's safe to keep this enabled even on non dvd videos. this will only work if you provide
@@ -255,13 +255,20 @@ CFG = {
 	},
 	"aspect_ratio": {
 		# """
-		# Fix the aspect ratio of the input video by using it's supplied Display Aspect Ratio value.
-		# Note: This will round up the width value if it's not an int.
+		# Convert the aspect ratio of the stored frames from rectangular PAR to square PAR.
+		# Note: This will round up the width or height value if it's not an int.
+		#
+		# Mode 0 does less interpolation and fewer pixels, Mode 1 keeps all pixels and instead
+		# of squashing it interpolates and stretches the height resulting in MORE pixels.
+		#
+		# Fewer pixels from mode 0 does not necessarily indicate a lower resolution or compressed
+		# image.
 		#
 		# Just so you know, you can specify the Display aspect ratio on the encoded video on MP4 or MKV
 		# within the container's metadata, using this option isn't directly needed.
 		# """
-		"enabled": False,
+		"enabled": True,
+		"mode": 0,  # 0 == squash width, 1 == stretch height
 		"kernel": core.resize.Spline64  # Good options are Spline64, Bicubic and Nearest-Neighbour/Point depending on what you need done.
 	}
 }
@@ -369,11 +376,18 @@ if CFG["aspect_ratio"]["enabled"] and sourcer == "core.d2v.Source":
 	aspect_ratio = d2v.settings["Aspect_Ratio"]
 	aspect_ratio_s = [int(x) for x in aspect_ratio.split(":")]
 	calculated_width = clip.height * (aspect_ratio_s[0] / aspect_ratio_s[1])
+	calculated_height = clip.width / (aspect_ratio_s[0] / aspect_ratio_s[1])
 	if CFG["vsgan"]["enabled"] and CFG["vsgan"]["compare"] == 2:
 		# make the width double to accomodate vsgan compare mode 2 if used
 		calculated_width = calculated_width * 2
 	if calculated_width != math.ceil(calculated_width):
 		aspect_ratio += f" [rounded]"
-	clip = CFG["aspect_ratio"]["kernel"](clip=clip, width=math.ceil(calculated_width))
+	# Convert from rectangular PAR to square PAR by:
+	if CFG["aspect_ratio"]["mode"] == 0:
+		# squashing width
+		clip = CFG["aspect_ratio"]["kernel"](clip=clip, width=math.ceil(calculated_width))
+	elif CFG["aspect_ratio"]["mode"] == 1:
+		# stretching height
+		clip = CFG["aspect_ratio"]["kernel"](clip=clip, height=math.ceil(calculated_height))
 
 clip.set_output()
