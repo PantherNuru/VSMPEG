@@ -49,7 +49,7 @@ Note:
 
 ### Python
 
-1. `python -m pip install --user pvsfunc pyd2v`
+`python -m pip install --user /path/to/requirements.txt`
 
 ### VapourSynth
 

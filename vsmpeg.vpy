@@ -11,8 +11,9 @@ import subprocess
 # pip packages
 from pvsfunc.psourcer import PSourcer
 from pvsfunc.pdeinterlacer import PDeinterlacer
+from pvsfunc.pdebox import PDebox
+from pvsfunc.pdecimate import PDecimate
 from pvsfunc.helpers import anti_file_prefix
-from pvsfunc import decimate, debox
 from pyd2v import D2V
 from pymediainfo import MediaInfo
 
@@ -315,11 +316,11 @@ clip = PDeinterlacer(clip, **CFG["deinterlace"], debug=CFG["debug"]).clip
 
 # Decimate
 if CFG["decimate"]["enabled"]:
-	clip = decimate(
+	clip = PDecimate(
 		clip=clip,
 		**{k: v for k,v in CFG["decimate"].items() if k not in ["enabled"]},
 		debug=CFG["debug"]
-	)
+	).clip
 
 # Chroma
 if type(CFG["chroma"]["location"]) is int:
@@ -329,10 +330,10 @@ if type(CFG["chroma"]["location"]) is int:
 
 # Debox
 if CFG["debox"]["enabled"]:
-	clip = debox(
+	clip = PDebox(
 		clip,
 		**{k: v for k,v in CFG["debox"].items() if k not in ["enabled"]}
-	)
+	).clip
 
 # VSGAN
 if CFG["vsgan"]["enabled"]:
