@@ -225,30 +225,26 @@ CFG = {
 		"compare": 1,  # Compare between input and output of VSGAN, 0=Off, 1==Interleave, 2==StackHorizontal, 3==mvsfunc.Preview
 		"output_yuv": False,  # Convert Result frame to YUV, recommended if encoding to video with FFMPEG, otherwise disable
 		"executions": [{
-			"enabled": False,
-			"model": r"/home/phoenix/github/BasicSR/experiments/sollevante/models/300000_G.pth",
-			"scale": 4,
-			"device": 1,
-			"chunk": False,
-			"resample": 1080
-		}, {
-			"enabled": False,
-			"model": r"/home/phoenix/github/BasicSR/experiments/american-dad-s07e01/models/75000_G.pth",
-			"scale": 4,
+			"enabled": True,
+			"model": r"/home/phoenix/github/BasicSR-dev2/experiments/pkmnIntroLineClean/models/35000_G.pth",
 			"device": 0,
 			"chunk": False,
 			"resample": 1080
 		}, {
 			"enabled": False,
-			"model": r"/home/phoenix/github/BasicSR/experiments/family-guy-its-a-trap/models/100000_G.pth",
-			"scale": 4,
+			"model": r"/home/phoenix/Desktop/experiments/SpongeBob.CEL.2.HD.125ki.499e.16.208psnr-PHOENiX.pth",
 			"device": 0,
 			"chunk": False,
 			"resample": 1080
 		}, {
 			"enabled": True,
-			"model": r"/home/phoenix/BasicSR-Xin/experiments/pokemon_br2remaster/models/200000_G.pth",
-			"scale": 1,
+			"model": r"/home/phoenix/github/BasicSR-dev2/experiments/pkmnbd2hd/models/80000_G.pth",
+			"device": 0,
+			"chunk": False,
+			"resample": 1080
+		}, {
+			"enabled": False,
+			"model": r"/home/phoenix/github/BasicSR/experiments/old_models/pokemon_br2remaster.pth",
 			"device": 1,
 			"chunk": False,
 			"resample": 1080
@@ -268,8 +264,9 @@ CFG = {
 		# Just so you know, you can specify the Display aspect ratio on the encoded video on MP4 or MKV
 		# within the container's metadata, using this option isn't directly needed.
 		# """
-		"enabled": True,
+		"enabled": False,
 		"mode": 0,  # 0 == squash width, 1 == stretch height
+		#"forced_ar": [16, 9],
 		"kernel": core.resize.Spline64  # Good options are Spline64, Bicubic and Nearest-Neighbour/Point depending on what you need done.
 	}
 }
@@ -345,10 +342,7 @@ if CFG["vsgan"]["enabled"]:
 		if not execution["enabled"]:
 			continue
 		vsgan_device = VSGAN(execution["device"])
-		vsgan_device.load_model(
-			model=execution["model"],
-			scale=execution["scale"]
-		)
+		vsgan_device.load_model(anti_file_prefix(execution["model"]))
 		clip = vsgan_device.run(clip, chunk=execution["chunk"])
 		if execution["resample"]:
 			clip = core.resize.Spline36(
@@ -375,7 +369,7 @@ if CFG["vsgan"]["enabled"]:
 if CFG["aspect_ratio"]["enabled"] and sourcer == "core.d2v.Source":
 	d2v = D2V(clip.get_frame(0).props["PVSFilePath"])
 	aspect_ratio = d2v.settings["Aspect_Ratio"]
-	aspect_ratio_s = [int(x) for x in aspect_ratio.split(":")]
+	aspect_ratio_s = CFG["aspect_ratio"]["forced_ar"] if "forced_ar" in CFG["aspect_ratio"] else [int(x) for x in aspect_ratio.split(":")]
 	calculated_width = clip.height * (aspect_ratio_s[0] / aspect_ratio_s[1])
 	calculated_height = clip.width / (aspect_ratio_s[0] / aspect_ratio_s[1])
 	if CFG["vsgan"]["enabled"] and CFG["vsgan"]["compare"] == 2:

@@ -56,11 +56,11 @@ Note:
 #### Windows:
 
 1. Run `where vsrepo.py` and copy the full path it gives you.
-2. `python <path/to/vsrepo.py> install havsfunc mvsfunc d2v ffms2`.
+2. `python <path/to/vsrepo.py> install havsfunc mvsfunc d2v ffms2 lsmas`.
 
 #### Linux:
 
-1. It needs havsfunc, mvsfunc, d2v_source, and ffms2.
+1. It needs havsfunc, mvsfunc, d2v_source, lsmas (L-SMASH-Works), and ffms2.
 2. All are available on GitHub, you're on Linux you know the deal.
 3. Go compile and install it, or use you're distro's AUR/User-Repository and hope it's on it.
 
