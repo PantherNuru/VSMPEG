@@ -209,8 +209,8 @@ CFG = {
 		# """
 		"enabled": False,
 		"aspect_ratio": "4:3",
-		#"mode": 0,
-		#"offset": 0
+		"mode": 0,
+		"offset": 0
 	},
 	"vsgan": {
 		# """
@@ -229,24 +229,28 @@ CFG = {
 			"model": r"/home/phoenix/github/BasicSR-dev2/experiments/pkmnIntroLineClean/models/35000_G.pth",
 			"device": 0,
 			"chunk": False,
+			"presample": 1080,
 			"resample": 1080
 		}, {
 			"enabled": False,
 			"model": r"/home/phoenix/Desktop/experiments/SpongeBob.CEL.2.HD.125ki.499e.16.208psnr-PHOENiX.pth",
 			"device": 0,
 			"chunk": False,
+			"presample": None,
 			"resample": 1080
 		}, {
 			"enabled": True,
 			"model": r"/home/phoenix/github/BasicSR-dev2/experiments/pkmnbd2hd/models/80000_G.pth",
 			"device": 0,
 			"chunk": False,
+			"presample": 1080,
 			"resample": 1080
 		}, {
 			"enabled": False,
 			"model": r"/home/phoenix/github/BasicSR/experiments/old_models/pokemon_br2remaster.pth",
 			"device": 1,
 			"chunk": False,
+			"presample": None,
 			"resample": 1080
 		}]
 	},
@@ -343,6 +347,12 @@ if CFG["vsgan"]["enabled"]:
 			continue
 		vsgan_device = VSGAN(execution["device"])
 		vsgan_device.load_model(anti_file_prefix(execution["model"]))
+		if execution["presample"]:
+			clip = core.resize.Spline36(
+				clip,
+				width=execution["presample"] * (clip.width / clip.height),
+				height=execution["presample"]
+			)
 		clip = vsgan_device.run(clip, chunk=execution["chunk"])
 		if execution["resample"]:
 			clip = core.resize.Spline36(
