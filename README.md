@@ -49,7 +49,8 @@ Note:
 
 ### Python
 
-`python -m pip install --user /path/to/requirements.txt`
+1. Simply run `python -m pip install --user /path/to/requirements.txt`
+2. However, please try and re-run the above command every now and then in case there's crucial updates to dependencies that have been made.
 
 ### VapourSynth
 
